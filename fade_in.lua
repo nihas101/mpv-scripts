@@ -40,11 +40,11 @@ local function fade_in_volume()
 	local next_volume = current_volume + state.volume_step 
 	if next_volume < state.target_volume then
 		msg.debug('Increasing volume to ' .. next_volume)
-		mp.set_property('volume',  next_volume)
+		mp.set_property_number('volume',  next_volume)
 		state.expected_volume = next_volume
 		update_ov(next_volume)
 	else
-		mp.set_property('volume',  state.target_volume)
+		mp.set_property_number('volume',  state.target_volume)
 		finish_fade_in()
 		msg.debug('Previous max volume (' .. state.target_volume .. ') reached ')
 	end
@@ -53,7 +53,7 @@ end
 local function init_fade_in(event)
 	state.target_volume = tonumber(mp.get_property('volume')) -- We set this again here in case the user adjusted the volume before playing a video
 	msg.info('Fading volume from ' .. state.init_volume .. ' to ' .. state.target_volume)
-	mp.set_property('volume',  state.init_volume)
+	mp.set_property_number('volume',  state.init_volume)
 	state.expected_volume = state.init_volume
 	state.timer = mp.add_periodic_timer(state.time_step_sec, fade_in_volume)
 end
@@ -62,7 +62,7 @@ local function restore_volume(event)
 	-- If the user or mpv exits early we restore the volume to the old state properly
 	if state.timer:is_enabled() then
 		finish_fade_in()
-		mp.set_property('volume',  state.target_volume)
+		mp.set_property_number('volume',  state.target_volume)
 	end
 end
 
