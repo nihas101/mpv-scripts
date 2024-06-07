@@ -10,13 +10,13 @@ local state = {
 	timer = nil,
 }
 
-function update_ov(percent_amount)
+local function update_ov(percent_amount)
 	ov.data = '{\\pos(10, 10)\\{\\fs10}{\\an7}{\\bord2}' .. percent_amount ..'%'
 	ov:update()
 	ov.data = nil
 end
 
-function finish_fade_in()
+local function finish_fade_in()
 	if state.timer then
 		msg.debug('Ending the timer')
 		state.timer:kill()
@@ -26,7 +26,7 @@ function finish_fade_in()
 	ov:remove()
 end
 
-function fade_in_volume()
+local function fade_in_volume()
 	-- Check if the user interrupted the fadein
 	-- In that case we abort, because the user likely adjusted the volume for a reason
 	local current_volume = tonumber(mp.get_property('volume'))
@@ -50,7 +50,7 @@ function fade_in_volume()
 	end
 end
 
-function init_fade_in(event)
+local function init_fade_in(event)
 	state.target_volume = tonumber(mp.get_property('volume')) -- We set this again here in case the user adjusted the volume before playing a video
 	msg.info('Fading volume from ' .. state.init_volume .. ' to ' .. state.target_volume)
 	mp.set_property('volume',  state.init_volume)
@@ -58,7 +58,7 @@ function init_fade_in(event)
 	state.timer = mp.add_periodic_timer(state.time_step_sec, fade_in_volume)
 end
 
-function restore_volume(event)
+local function restore_volume(event)
 	-- If the user or mpv exits early we restore the volume to the old state properly
 	if state.timer:is_enabled() then
 		finish_fade_in()
