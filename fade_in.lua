@@ -58,12 +58,15 @@ function init_fade_in(event)
 	state.timer = mp.add_periodic_timer(state.time_step_sec, fade_in_volume)
 end
 
-function restore_volume()
+function restore_volume(event)
 	-- If the user or mpv exits early we restore the volume to the old state properly
-	finish_fade_in()
-	mp.set_property('volume',  state.target_volume)
+	if state.timer:is_enabled() then
+		finish_fade_in()
+		mp.set_property('volume',  state.target_volume)
+	end
 end
 
 state.target_volume = tonumber(mp.get_property('volume'))
 msg.debug('shutdown event registerd: ' .. tostring(mp.register_event('shutdown', restore_volume)))
+msg.debug('end-file event registerd: ' .. tostring(mp.register_event('end-file', restore_volume)))
 msg.debug('file-loaded event registered: ' .. tostring(mp.register_event('file-loaded', init_fade_in)))
