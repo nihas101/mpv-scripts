@@ -1,3 +1,4 @@
+-- A script for slowly increasing the soudn volume on file load, until the original is reached, in order to avoid blowing out your ears on videos that are louder than usual
 local msg = require('mp.msg')
 
 local ov = mp.create_osd_overlay('ass-events')
